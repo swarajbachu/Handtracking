@@ -3,14 +3,16 @@ import mediapipe as mp
 import time
 
 class HandDetector():
-    def __init__(self, mode=False, maxHands=2, detectionCon=0.5, trackCon=0.5):
+    def __init__(self, mode=False, maxHands=1, modelComplexity=1, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
         self.maxHands = maxHands
+        self.modelComplex = modelComplexity
         self.detectionCon = detectionCon
         self.trackCon = trackCon
 
         self.mpHands = mp.solutions.hands
-        self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.detectionCon, self.trackCon)
+        self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.modelComplex,
+                                        self.detectionCon, self.trackCon)
         self.mpDraw = mp.solutions.drawing_utils
 
     def findHands(self, img, draw=True):
@@ -51,20 +53,20 @@ def main():
     cTime = 0
 
     while True:
+        success, img = cap.read()
         img = detector.findHands(img)
         lmList = detector.findPosition(img)
-        success, img = cap.read()
 
 
 
-    cTime = time.time()
-    fps = 1 / (cTime - pTime)
-    pTime = cTime
+        cTime = time.time()
+        fps = 1 / (cTime - pTime)
+        pTime = cTime
 
-    cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
+        cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
 
-    cv2.imshow("Image", img)
-    cv2.waitKey(1)
+        cv2.imshow("Image", img)
+        cv2.waitKey(1)
 
 
 
